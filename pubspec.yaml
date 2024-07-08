@@ -28,8 +28,7 @@ dependencies:
   http: ^1.1.0
   flutter_html: 
      git:
-      url: https://github.com/rohan-165/flutter_html_reborn
-      ref: fix-version
+      url: https://github.com/khabzamilan/flutter_html  
   fading_edge_scrollview: ^4.1.1
   path_provider: ^2.1.3
 
