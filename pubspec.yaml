@@ -15,13 +15,21 @@ dependencies:
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   screen_brightness: ^1.0.1
-  epubx: ^4.0.0
+  #E-pub
+  epubx:
+    git:
+     url: https://github.com/rohan-165/epubx
+     ref: hotfix/image-issue
+
   fluttertoast: ^8.2.5
   get_storage: ^2.1.1
   flutter_screenutil: ^5.9.0
   html: ^0.15.4
   http: ^1.1.0
-  flutter_html_reborn: ^3.0.0
+  flutter_html: 
+     git:
+      url: https://github.com/rohan-165/flutter_html_reborn
+      ref: fix-version
   fading_edge_scrollview: ^4.1.1
   path_provider: ^2.1.3
 

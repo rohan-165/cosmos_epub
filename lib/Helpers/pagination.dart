@@ -4,7 +4,7 @@ import 'package:cosmos_epub/PageFlip/page_flip_widget.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html_reborn/flutter_html_reborn.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PagingTextHandler {
