@@ -776,8 +776,7 @@ class ShowEpubState extends State<ShowEpub> {
                         decoration: BoxDecoration(
                           color: backColor,
                           border: Border(
-                            top: BorderSide(
-                                width: 3.w, color: widget.accentColor),
+                            top: BorderSide(width: 3.w, color: fontColor),
                           ),
                         ),
                         child: Row(
