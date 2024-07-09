@@ -26,6 +26,8 @@ class PagingWidget extends StatefulWidget {
   final Function(int, int) onPageFlip;
   final Function(int, int) onLastPage;
   final Widget? lastWidget;
+  final String? cssContent;
+  final Map<String, String>? bodyStyleMap;
 
   const PagingWidget(
     this.textContent,
@@ -43,6 +45,8 @@ class PagingWidget extends StatefulWidget {
     required this.chapterTitle,
     required this.totalChapters,
     this.lastWidget,
+    this.cssContent,
+    this.bodyStyleMap,
   });
 
   @override
@@ -179,23 +183,46 @@ class _PagingWidgetState extends State<PagingWidget> {
               child: Padding(
                 padding: EdgeInsets.only(
                     bottom: 40.h, top: 60.h, left: 10.w, right: 10.w),
-                child: widget.innerHtmlContent != null
+                child: (((widget.cssContent ?? '').isNotEmpty ||
+                            (widget.bodyStyleMap ?? {}).isNotEmpty) &&
+                        widget.innerHtmlContent != null)
                     ? Html(
-                        data: text,
+                        data: '''
+                                        <style>
+                                          ${widget.cssContent ?? ''}
+                                              </style>
+                                              $text
+                                        ''',
                         style: {
-                          "*": Style(
-                              textAlign: TextAlign.justify,
-                              fontSize: FontSize(widget.style.fontSize ?? 0),
-                              fontFamily: widget.style.fontFamily,
-                              color: widget.style.color),
+                          "body": Style(
+                            fontSize: _parseFontSize(
+                                widget.bodyStyleMap?['font-size']),
+                            color: _parseColor(widget.bodyStyleMap?['color']),
+                            backgroundColor: _parseColor(
+                                widget.bodyStyleMap?['background-color']),
+                            textAlign: _parseTextAlign(
+                                widget.bodyStyleMap?['text-align']),
+                          ),
                         },
                       )
-                    : Text(
-                        text,
-                        textAlign: TextAlign.justify,
-                        style: widget.style,
-                        overflow: TextOverflow.visible,
-                      ),
+                    : widget.innerHtmlContent != null
+                        ? Html(
+                            data: text,
+                            style: {
+                              "*": Style(
+                                  textAlign: TextAlign.justify,
+                                  fontSize:
+                                      FontSize(widget.style.fontSize ?? 0),
+                                  fontFamily: widget.style.fontFamily,
+                                  color: widget.style.color),
+                            },
+                          )
+                        : Text(
+                            text,
+                            textAlign: TextAlign.justify,
+                            style: widget.style,
+                            overflow: TextOverflow.visible,
+                          ),
               ),
             ),
           ),
@@ -314,4 +341,47 @@ class _PagingWidgetState extends State<PagingWidget> {
           }
         });
   }
+
+  FontSize _parseFontSize(String? fontSize) {
+    if (fontSize == null) return FontSize.medium;
+    if (fontSize.endsWith('px')) {
+      return FontSize(double.parse(fontSize.replaceAll('px', '')));
+    }
+    return FontSize.medium; // default value
+  }
+
+  Color? _parseColor(String? color) {
+    if (color == null) return null;
+    return HexColor.fromHex(color);
+  }
+
+  TextAlign? _parseTextAlign(String? textAlign) {
+    switch (textAlign) {
+      case 'left':
+        return TextAlign.left;
+      case 'right':
+        return TextAlign.right;
+      case 'center':
+        return TextAlign.center;
+      case 'justify':
+        return TextAlign.justify;
+      default:
+        return null;
+    }
+  }
+}
+
+extension HexColor on Color {
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
 }

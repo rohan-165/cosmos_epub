@@ -45,7 +45,8 @@ List<String> fontNames = [
   "Lora",
   "Ubuntu"
 ];
-
+Color whiteColor = const Color(0xFFFFFFFF);
+Color blackColor = const Color(0xFF2B2A2A);
 Color backColor = Colors.white;
 Color fontColor = Colors.black;
 int staticThemeId = 3;
@@ -61,6 +62,10 @@ class ShowEpub extends StatefulWidget {
   final Function(int lastPageIndex)? onLastPage;
   final Color accentColor;
 
+  /// Added By @rohan-165
+  final String? cssContent;
+  final Map<String, String>? bodyStyleMap;
+
   ShowEpub({
     super.key,
     required this.epubBook,
@@ -71,6 +76,8 @@ class ShowEpub extends StatefulWidget {
     required this.chapterListTitle,
     this.onPageFlip,
     this.onLastPage,
+    this.cssContent,
+    this.bodyStyleMap,
   });
 
   @override
@@ -300,34 +307,34 @@ class ShowEpubState extends State<ShowEpub> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      updateTheme(1);
-                                    },
-                                    child: CircleButton(
-                                      backColor: cVioletishColor,
-                                      fontColor: Colors.black,
-                                      id: 1,
-                                      accentColor: widget.accentColor,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10.w,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      updateTheme(2);
-                                    },
-                                    child: CircleButton(
-                                      backColor: cBluishColor,
-                                      fontColor: Colors.black,
-                                      id: 2,
-                                      accentColor: widget.accentColor,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10.w,
-                                  ),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     updateTheme(1);
+                                  //   },
+                                  //   child: CircleButton(
+                                  //     backColor: cVioletishColor,
+                                  //     fontColor: Colors.black,
+                                  //     id: 1,
+                                  //     accentColor: widget.accentColor,
+                                  //   ),
+                                  // ),
+                                  // SizedBox(
+                                  //   width: 10.w,
+                                  // ),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     updateTheme(2);
+                                  //   },
+                                  //   child: CircleButton(
+                                  //     backColor: cBluishColor,
+                                  //     fontColor: Colors.black,
+                                  //     id: 2,
+                                  //     accentColor: widget.accentColor,
+                                  //   ),
+                                  // ),
+                                  // SizedBox(
+                                  //   width: 10.w,
+                                  // ),
                                   GestureDetector(
                                     onTap: () {
                                       updateTheme(3);
@@ -353,20 +360,20 @@ class ShowEpubState extends State<ShowEpub> {
                                       accentColor: widget.accentColor,
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 10.w,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      updateTheme(5);
-                                    },
-                                    child: CircleButton(
-                                      id: 5,
-                                      backColor: cPinkishColor,
-                                      fontColor: Colors.black,
-                                      accentColor: widget.accentColor,
-                                    ),
-                                  ),
+                                  // SizedBox(
+                                  //   width: 10.w,
+                                  // ),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     updateTheme(5);
+                                  //   },
+                                  //   child: CircleButton(
+                                  //     id: 5,
+                                  //     backColor: cPinkishColor,
+                                  //     fontColor: Colors.black,
+                                  //     accentColor: widget.accentColor,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -507,11 +514,11 @@ class ShowEpubState extends State<ShowEpub> {
       backColor = cBluishColor;
       fontColor = Colors.black;
     } else if (id == 3) {
-      backColor = Colors.white;
-      fontColor = Colors.black;
+      backColor = whiteColor;
+      fontColor = blackColor;
     } else if (id == 4) {
-      backColor = Colors.black;
-      fontColor = Colors.white;
+      backColor = blackColor;
+      fontColor = whiteColor;
     } else {
       backColor = cPinkishColor;
       fontColor = Colors.black;
@@ -602,6 +609,8 @@ class ShowEpubState extends State<ShowEpub> {
                                     return PagingWidget(
                                       textContent,
                                       innerHtmlContent,
+                                      cssContent: widget.cssContent,
+                                      bodyStyleMap: widget.bodyStyleMap,
 
                                       ///Do we need this to the production
                                       lastWidget: null,
@@ -840,34 +849,60 @@ class ShowEpubState extends State<ShowEpub> {
                   color: backColor,
                   child: Padding(
                     padding: EdgeInsets.only(top: 3.h),
-                    child: AppBar(
-                      centerTitle: true,
-                      title: Text(
-                        bookTitle,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                            color: fontColor),
-                      ),
-                      backgroundColor: backColor,
-                      shape: Border(
-                          bottom: BorderSide(
-                              color: widget.accentColor, width: 3.h)),
-                      elevation: 0,
-                      leading: IconButton(
-                        onPressed: openTableOfContents,
-                        icon: Icon(
-                          Icons.menu,
-                          color: fontColor,
-                          size: 20.h,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          padding: EdgeInsets.only(
+                            left: 8.w,
+                            top: 8.h,
+                            bottom: 8.h,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: fontColor,
+                            size: 20.h,
+                          ),
                         ),
-                      ),
-                      actions: [
-                        InkWell(
-                            onTap: () {
+                        IconButton(
+                          padding: EdgeInsets.only(
+                            right: 8.w,
+                            top: 8.h,
+                            bottom: 8.h,
+                          ),
+                          onPressed: openTableOfContents,
+                          icon: Icon(
+                            Icons.menu,
+                            color: fontColor,
+                            size: 20.h,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            chaptersList.isNotEmpty
+                                ? chaptersList[bookProgress
+                                            .getBookProgress(bookId)
+                                            .currentChapterIndex ??
+                                        0]
+                                    .chapter
+                                : bookTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                              color: fontColor,
+                            ),
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        IconButton(
+                            onPressed: () {
                               updateFontSettings();
                             },
-                            child: Container(
+                            icon: Container(
                               width: 40.w,
                               alignment: Alignment.center,
                               child: Text(
@@ -878,29 +913,71 @@ class ShowEpubState extends State<ShowEpub> {
                                     fontWeight: FontWeight.bold),
                               ),
                             )),
-                        SizedBox(
-                          width: 5.w,
-                        ),
-                        InkWell(
-                            onTap: () async {
-                              setState(() {
-                                showBrightnessWidget = true;
-                              });
-                              await Future.delayed(const Duration(seconds: 7));
-                              setState(() {
-                                showBrightnessWidget = false;
-                              });
-                            },
-                            child: Icon(
-                              Icons.brightness_high_sharp,
-                              size: 20.h,
-                              color: fontColor,
-                            )),
-                        SizedBox(
-                          width: 10.w,
-                        )
                       ],
                     ),
+
+                    /// Comment By @rohan-165 as per our project requirement i have changes the code.
+                    // AppBar(
+                    //   centerTitle: true,
+                    //   title: Text(
+                    //     bookTitle,
+                    //     style: TextStyle(
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 16.sp,
+                    //         color: fontColor),
+                    //   ),
+                    //   backgroundColor: backColor,
+                    //   shape: Border(
+                    //       bottom: BorderSide(
+                    //           color: widget.accentColor, width: 3.h)),
+                    //   elevation: 0,
+                    //   leading: IconButton(
+                    //     onPressed: openTableOfContents,
+                    //     icon: Icon(
+                    //       Icons.menu,
+                    //       color: fontColor,
+                    //       size: 20.h,
+                    //     ),
+                    //   ),
+                    //   actions: [
+                    //     InkWell(
+                    //         onTap: () {
+                    //           updateFontSettings();
+                    //         },
+                    //         child: Container(
+                    //           width: 40.w,
+                    //           alignment: Alignment.center,
+                    //           child: Text(
+                    //             "Aa",
+                    //             style: TextStyle(
+                    //                 fontSize: 18.sp,
+                    //                 color: fontColor,
+                    //                 fontWeight: FontWeight.bold),
+                    //           ),
+                    //         )),
+                    //     SizedBox(
+                    //       width: 5.w,
+                    //     ),
+                    //     InkWell(
+                    //         onTap: () async {
+                    //           setState(() {
+                    //             showBrightnessWidget = true;
+                    //           });
+                    //           await Future.delayed(const Duration(seconds: 7));
+                    //           setState(() {
+                    //             showBrightnessWidget = false;
+                    //           });
+                    //         },
+                    //         child: Icon(
+                    //           Icons.brightness_high_sharp,
+                    //           size: 20.h,
+                    //           color: fontColor,
+                    //         )),
+                    //     SizedBox(
+                    //       width: 10.w,
+                    //     )
+                    //   ],
+                    // ),
                   ),
                 ),
               ],
