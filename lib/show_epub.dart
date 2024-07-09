@@ -27,23 +27,30 @@ late BookProgressSingleton bookProgress;
 const double DESIGN_WIDTH = 375;
 const double DESIGN_HEIGHT = 812;
 
-String selectedFont = 'Segoe';
+String selectedFont = 'Calibri';
 List<String> fontNames = [
-  "Segoe",
-  "Alegreya",
-  "Amazon Ember",
-  "Atkinson Hyperlegible",
-  "Bitter Pro",
-  "Bookerly",
-  "Droid Sans",
-  "EB Garamond",
-  "Gentium Book Plus",
-  "Halant",
-  "IBM Plex Sans",
-  "LinLibertine",
-  "Literata",
-  "Lora",
-  "Ubuntu"
+  /// Comment by @rohan-165 for project requirement
+  // "Segoe",
+  // "Alegreya",
+  // "Amazon Ember",
+  // "Atkinson Hyperlegible",
+  // "Bitter Pro",
+  // "Bookerly",
+  // "Droid Sans",
+  // "EB Garamond",
+  // "Gentium Book Plus",
+  // "Halant",
+  // "IBM Plex Sans",
+  // "LinLibertine",
+  // "Literata",
+  // "Lora",
+  // "Ubuntu"
+
+  /// Added by @rohan-165
+  // 'Shreenath',
+  // 'Circular Std',
+  // 'PREETI',
+  'Calibri',
 ];
 Color whiteColor = const Color(0xFFFFFFFF);
 Color blackColor = const Color(0xFF2B2A2A);
@@ -62,10 +69,6 @@ class ShowEpub extends StatefulWidget {
   final Function(int lastPageIndex)? onLastPage;
   final Color accentColor;
 
-  /// Added By @rohan-165
-  final String? cssContent;
-  final Map<String, String>? bodyStyleMap;
-
   ShowEpub({
     super.key,
     required this.epubBook,
@@ -76,8 +79,6 @@ class ShowEpub extends StatefulWidget {
     required this.chapterListTitle,
     this.onPageFlip,
     this.onLastPage,
-    this.cssContent,
-    this.bodyStyleMap,
   });
 
   @override
@@ -296,7 +297,7 @@ class ShowEpubState extends State<ShowEpub> {
           return SingleChildScrollView(
               child: StatefulBuilder(
                   builder: (BuildContext context, setState) => SizedBox(
-                        height: 170.h,
+                        height: 130.h,
                         child: Column(
                           children: [
                             Container(
@@ -383,75 +384,77 @@ class ShowEpubState extends State<ShowEpub> {
                               indent: 0,
                               color: Colors.grey,
                             ),
+                            10.verticalSpace,
                             Expanded(
                               child: Container(
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 20.h),
                                   child: Column(
                                     children: [
-                                      StatefulBuilder(
-                                        builder: (BuildContext context,
-                                                StateSetter setState) =>
-                                            Theme(
-                                          data: Theme.of(context)
-                                              .copyWith(canvasColor: backColor),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                                value: selectedFont,
-                                                isExpanded: true,
-                                                menuMaxHeight: 400.h,
-                                                onChanged: (newValue) {
-                                                  selectedFont =
-                                                      newValue ?? 'Segoe';
+                                      /// Comment by @rohan-165
+                                      // StatefulBuilder(
+                                      //   builder: (BuildContext context,
+                                      //           StateSetter setState) =>
+                                      //       Theme(
+                                      //     data: Theme.of(context)
+                                      //         .copyWith(canvasColor: backColor),
+                                      //     child: DropdownButtonHideUnderline(
+                                      //       child: DropdownButton<String>(
+                                      //           value: selectedFont,
+                                      //           isExpanded: true,
+                                      //           menuMaxHeight: 400.h,
+                                      //           onChanged: (newValue) {
+                                      //             selectedFont =
+                                      //                 newValue ?? 'Segoe';
 
-                                                  selectedTextStyle = fontNames
-                                                      .where((element) =>
-                                                          element ==
-                                                          selectedFont)
-                                                      .first;
+                                      //             selectedTextStyle = fontNames
+                                      //                 .where((element) =>
+                                      //                     element ==
+                                      //                     selectedFont)
+                                      //                 .first;
 
-                                                  gs.write(
-                                                      libFont, selectedFont);
+                                      //             gs.write(
+                                      //                 libFont, selectedFont);
 
-                                                  ///For updating inside
-                                                  setState(() {});
-                                                  controllerPaging.paginate();
-                                                  updateUI();
-                                                },
-                                                items: fontNames.map<
-                                                    DropdownMenuItem<
-                                                        String>>((String font) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: font,
-                                                    child: Text(
-                                                      font,
-                                                      style: TextStyle(
-                                                          color: selectedFont ==
-                                                                  font
-                                                              ? widget
-                                                                  .accentColor
-                                                              : fontColor,
-                                                          package:
-                                                              'cosmos_epub',
-                                                          fontSize:
-                                                              context.isTablet
-                                                                  ? 10.sp
-                                                                  : 15.sp,
-                                                          fontWeight:
-                                                              selectedFont ==
-                                                                      font
-                                                                  ? FontWeight
-                                                                      .bold
-                                                                  : FontWeight
-                                                                      .normal,
-                                                          fontFamily: font),
-                                                    ),
-                                                  );
-                                                }).toList()),
-                                          ),
-                                        ),
-                                      ),
+                                      //             ///For updating inside
+                                      //             setState(() {});
+                                      //             controllerPaging.paginate();
+                                      //             updateUI();
+                                      //           },
+                                      //           items: fontNames.map<
+                                      //               DropdownMenuItem<
+                                      //                   String>>((String font) {
+                                      //             return DropdownMenuItem<
+                                      //                 String>(
+                                      //               value: font,
+                                      //               child: Text(
+                                      //                 font,
+                                      //                 style: TextStyle(
+                                      //                     color: selectedFont ==
+                                      //                             font
+                                      //                         ? widget
+                                      //                             .accentColor
+                                      //                         : fontColor,
+                                      //                     package:
+                                      //                         'cosmos_epub',
+                                      //                     fontSize:
+                                      //                         context.isTablet
+                                      //                             ? 10.sp
+                                      //                             : 15.sp,
+                                      //                     fontWeight:
+                                      //                         selectedFont ==
+                                      //                                 font
+                                      //                             ? FontWeight
+                                      //                                 .bold
+                                      //                             : FontWeight
+                                      //                                 .normal,
+                                      //                     fontFamily: font),
+                                      //               ),
+                                      //             );
+                                      //           }).toList()),
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Row(
                                         children: [
                                           Text(
@@ -499,6 +502,7 @@ class ShowEpubState extends State<ShowEpub> {
                                     ],
                                   )),
                             ),
+                            10.verticalSpace,
                           ],
                         ),
                       )));
@@ -609,8 +613,6 @@ class ShowEpubState extends State<ShowEpub> {
                                     return PagingWidget(
                                       textContent,
                                       innerHtmlContent,
-                                      cssContent: widget.cssContent,
-                                      bodyStyleMap: widget.bodyStyleMap,
 
                                       ///Do we need this to the production
                                       lastWidget: null,

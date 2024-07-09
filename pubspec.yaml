@@ -94,6 +94,20 @@ flutter:
     - family: Ubuntu
       fonts:
         - asset: assets/fonts/Ubuntu-Var.ttf
+        # Added By @rohan-165 
+    - family: Shreenath 
+      fonts:
+        - asset: assets/fonts/Shreenath-Bold-Regular.ttf
+    - family: Circular Std
+      fonts:
+        - asset: assets/fonts/Circular_Std/CircularStd-Bold.ttf
+        - asset: assets/fonts/Circular_Std/CircularStd-Medium.ttf
+    - family: PREETI
+      fonts:
+        - asset: assets/fonts/PREETI.TTF
+    - family: Calibri
+      fonts:
+        - asset: assets/fonts/Calibri/Calibri-Regular.ttf
 
   # To add assets to your package, add an assets section, like this:
   # assets:

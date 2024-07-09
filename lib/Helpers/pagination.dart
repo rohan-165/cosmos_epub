@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cosmos_epub/PageFlip/page_flip_widget.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,8 +24,6 @@ class PagingWidget extends StatefulWidget {
   final Function(int, int) onPageFlip;
   final Function(int, int) onLastPage;
   final Widget? lastWidget;
-  final String? cssContent;
-  final Map<String, String>? bodyStyleMap;
 
   const PagingWidget(
     this.textContent,
@@ -45,8 +41,6 @@ class PagingWidget extends StatefulWidget {
     required this.chapterTitle,
     required this.totalChapters,
     this.lastWidget,
-    this.cssContent,
-    this.bodyStyleMap,
   });
 
   @override
@@ -183,46 +177,23 @@ class _PagingWidgetState extends State<PagingWidget> {
               child: Padding(
                 padding: EdgeInsets.only(
                     bottom: 40.h, top: 60.h, left: 10.w, right: 10.w),
-                child: (((widget.cssContent ?? '').isNotEmpty ||
-                            (widget.bodyStyleMap ?? {}).isNotEmpty) &&
-                        widget.innerHtmlContent != null)
+                child: widget.innerHtmlContent != null
                     ? Html(
-                        data: '''
-                                        <style>
-                                          ${widget.cssContent ?? ''}
-                                              </style>
-                                              $text
-                                        ''',
+                        data: text,
                         style: {
-                          "body": Style(
-                            fontSize: _parseFontSize(
-                                widget.bodyStyleMap?['font-size']),
-                            color: _parseColor(widget.bodyStyleMap?['color']),
-                            backgroundColor: _parseColor(
-                                widget.bodyStyleMap?['background-color']),
-                            textAlign: _parseTextAlign(
-                                widget.bodyStyleMap?['text-align']),
-                          ),
+                          "*": Style(
+                              textAlign: TextAlign.justify,
+                              fontSize: FontSize(widget.style.fontSize ?? 0),
+                              fontFamily: widget.style.fontFamily,
+                              color: widget.style.color),
                         },
                       )
-                    : widget.innerHtmlContent != null
-                        ? Html(
-                            data: text,
-                            style: {
-                              "*": Style(
-                                  textAlign: TextAlign.justify,
-                                  fontSize:
-                                      FontSize(widget.style.fontSize ?? 0),
-                                  fontFamily: widget.style.fontFamily,
-                                  color: widget.style.color),
-                            },
-                          )
-                        : Text(
-                            text,
-                            textAlign: TextAlign.justify,
-                            style: widget.style,
-                            overflow: TextOverflow.visible,
-                          ),
+                    : Text(
+                        text,
+                        textAlign: TextAlign.justify,
+                        style: widget.style,
+                        overflow: TextOverflow.visible,
+                      ),
               ),
             ),
           ),
