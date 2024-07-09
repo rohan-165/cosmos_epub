@@ -15,7 +15,6 @@ import 'Helpers/custom_toast.dart';
 import 'Helpers/pagination.dart';
 import 'Helpers/progress_singleton.dart';
 import 'Model/chapter_model.dart';
-import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 
 ///TODO: Change Future to more controllable timer to control show/hide elements
 ///  BUG-1: https://github.com/Mamasodikov/cosmos_epub/issues/2
@@ -340,15 +339,6 @@ class ShowEpubState extends State<ShowEpub> {
                                   GestureDetector(
                                     onTap: () {
                                       updateTheme(3);
-                                      FlutterStatusbarcolor.setStatusBarColor(
-                                          Colors.white);
-                                      FlutterStatusbarcolor
-                                          .setNavigationBarColor(Colors.white);
-                                      FlutterStatusbarcolor
-                                          .setStatusBarWhiteForeground(false);
-                                      FlutterStatusbarcolor
-                                          .setNavigationBarWhiteForeground(
-                                              false);
                                     },
                                     child: CircleButton(
                                       id: 3,
@@ -363,22 +353,6 @@ class ShowEpubState extends State<ShowEpub> {
                                   GestureDetector(
                                     onTap: () {
                                       updateTheme(4);
-                                      FlutterStatusbarcolor.setStatusBarColor(
-                                          const Color.fromRGBO(
-                                              33, 33, 33, 1)); //dark gray
-                                      FlutterStatusbarcolor
-                                          .setNavigationBarColor(
-                                              const Color.fromRGBO(
-                                                  33, 33, 33, 1)); //dark gray
-                                      FlutterStatusbarcolor
-                                          .setStatusBarWhiteForeground(true);
-                                      FlutterStatusbarcolor
-                                          .setNavigationBarWhiteForeground(
-                                              true);
-                                      FlutterStatusbarcolor
-                                          .setNavigationBarColor(
-                                              const Color.fromRGBO(
-                                                  33, 33, 33, 1));
                                     },
                                     child: CircleButton(
                                       id: 4,
