@@ -20,4 +20,4 @@ wakelock_macos=/home/sushil/.pub-cache/git/wakelock-a751f420e6baacdc6198e89bba58
 wakelock_web=/home/sushil/.pub-cache/git/wakelock-a751f420e6baacdc6198e89bba583da7ec113d1d/wakelock_web/
 webview_flutter=/home/sushil/.pub-cache/hosted/pub.dev/webview_flutter-4.8.0/
 webview_flutter_android=/home/sushil/.pub-cache/hosted/pub.dev/webview_flutter_android-3.16.4/
-webview_flutter_wkwebview=/home/sushil/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.13.1/
+webview_flutter_wkwebview=/home/sushil/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.14.0/

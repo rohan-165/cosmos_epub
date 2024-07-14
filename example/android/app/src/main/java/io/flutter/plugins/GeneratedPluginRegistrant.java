@@ -16,11 +16,6 @@ public final class GeneratedPluginRegistrant {
   private static final String TAG = "GeneratedPluginRegistrant";
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
     try {
-      flutterEngine.getPlugins().add(new com.sameer.flutterstatusbarcolor.flutterstatusbarcolor.FlutterStatusbarcolorPlugin());
-    } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin flutter_statusbarcolor_ns, com.sameer.flutterstatusbarcolor.flutterstatusbarcolor.FlutterStatusbarcolorPlugin", e);
-    }
-    try {
       flutterEngine.getPlugins().add(new io.github.ponnamkarthik.toast.fluttertoast.FlutterToastPlugin());
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin fluttertoast, io.github.ponnamkarthik.toast.fluttertoast.FlutterToastPlugin", e);

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -46,49 +48,60 @@ class ChaptersList extends StatelessWidget {
         child: Container(
           color: backColor,
           padding: EdgeInsets.all(10.h),
-          child: ListView.builder(
-              itemCount: chapters.length,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, i) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      onTap: () async {
-                        await bookProgress.setCurrentChapterIndex(bookId, i);
-                        Navigator.of(context).pop(true);
-                      },
-                      leading: leadingIcon,
-                      minLeadingWidth: 20.w,
-                      title: Padding(
-                        padding: EdgeInsets.only(
-                            left: chapters[i].isSubChapter ? 15.w : 0),
-                        child: Text(chapters[i].chapter,
-                            style: TextStyle(
-                                color: bookProgress
-                                            .getBookProgress(bookId)
-                                            .currentChapterIndex ==
-                                        i
-                                    ? accentColor
-                                    : fontColor,
-                                fontFamily: fontNames
-                                    .where((element) => element == selectedFont)
-                                    .first,
-                                package: 'cosmos_epub',
-                                fontSize: 15.sp,
-                                fontWeight: chapters[i].isSubChapter
-                                    ? FontWeight.w400
-                                    : FontWeight.w600)),
-                      ),
-                      dense: true,
-                    ),
-                    Divider(height: 0, thickness: 1.h),
-                  ],
-                );
-              }),
+          child: _buildView(
+            list: chapters,
+            bookId: bookId,
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildView({
+    required List<LocalChapterModel> list,
+    required String bookId,
+  }) {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: list.length,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context, i) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () async {
+                  await bookProgress.setCurrentChapterIndex(bookId, i);
+                  Navigator.of(context).pop(true);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: (list[i].isSubChapters ?? false) ? 15.w : 0.w,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      10.verticalSpace,
+                      Text(list[i].Title ?? '',
+                          style: TextStyle(
+                              color: fontColor,
+                              fontFamily: fontNames
+                                  .where((element) => element == selectedFont)
+                                  .first,
+                              package: 'cosmos_epub',
+                              fontSize: 15.sp,
+                              fontWeight: (list[i].isSubChapters ?? false)
+                                  ? FontWeight.w400
+                                  : FontWeight.w600)),
+                      10.verticalSpace,
+                      Divider(height: 0, thickness: 1.h),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }

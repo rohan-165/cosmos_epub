@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cosmos_epub/Helpers/context_extensions.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/cupertino.dart';
@@ -180,35 +182,49 @@ class ShowEpubState extends State<ShowEpub> {
     });
   }
 
-  loadChapter({int index = -1}) async {
-    chaptersList = [];
-
-    await Future.wait(epubBook.Chapters!.map((EpubChapter chapter) async {
-      String? chapterTitle = chapter.Title;
-      List<LocalChapterModel> subChapters = [];
-      for (var element in chapter.SubChapters!) {
-        subChapters.add(
-            LocalChapterModel(chapter: element.Title!, isSubChapter: true));
+  Future<void> loadChapter({int index = -1}) async {
+    try {
+      // Check if epubBook.Chapters is not null
+      if (epubBook.Chapters == null) {
+        throw Exception("Chapters are null");
       }
 
-      chaptersList.add(LocalChapterModel(
-          chapter: chapterTitle ?? '...', isSubChapter: false));
+      List<LocalChapterModel> list = (epubBook.Chapters ?? []).isNotEmpty
+          ? loadSubChapter(epubBook.Chapters!)
+          : [];
 
-      chaptersList += subChapters;
-    }));
+      chaptersList = list;
 
-    ///Choose initial chapter
-    if (widget.starterChapter >= 0 &&
-        widget.starterChapter < chaptersList.length) {
-      setupNavButtons();
-      await updateContentAccordingChapter(
-          index == -1 ? widget.starterChapter : index);
-    } else {
-      setupNavButtons();
-      await updateContentAccordingChapter(0);
-      CustomToast.showToast(
-          "Invalid chapter number. Range [0-${chaptersList.length}]");
+      ///Choose initial chapter
+      if (widget.starterChapter >= 0 &&
+          widget.starterChapter < chaptersList.length) {
+        setupNavButtons();
+        await updateContentAccordingChapter(
+            index == -1 ? widget.starterChapter : index);
+      } else {
+        setupNavButtons();
+        await updateContentAccordingChapter(0);
+        CustomToast.showToast(
+            "Invalid chapter number. Range [0-${chaptersList.length - 1}]");
+      }
+    } catch (e) {
+      // Handle errors
+      CustomToast.showToast("Error loading chapters: ${e.toString()}");
     }
+  }
+
+  List<LocalChapterModel> loadSubChapter(List<EpubChapter> subChapters) {
+    List<LocalChapterModel> subchaptersList = [];
+    for (var chapter in subChapters) {
+      subchaptersList.add(LocalChapterModel(
+        Title: chapter.Title,
+        ContentFileName: chapter.ContentFileName,
+        Anchor: chapter.Anchor,
+        HtmlContent: chapter.HtmlContent,
+      ));
+    }
+
+    return subchaptersList;
   }
 
   updateContentAccordingChapter(int chapterIndex) async {
@@ -235,7 +251,7 @@ class ShowEpubState extends State<ShowEpub> {
     }));
 
     htmlContent = content;
-    textContent = parse(htmlContent).documentElement!.text;
+    textContent = parse(htmlContent).documentElement!.innerHtml;
 
     if (isHTML(textContent)) {
       innerHtmlContent = textContent;
@@ -611,6 +627,7 @@ class ShowEpubState extends State<ShowEpub> {
                                         0;
 
                                     return PagingWidget(
+                                      epubBook,
                                       textContent,
                                       innerHtmlContent,
 
@@ -690,7 +707,8 @@ class ShowEpubState extends State<ShowEpub> {
                                       },
                                       chapterTitle:
                                           chaptersList[currentChapterIndex]
-                                              .chapter,
+                                                  .Title ??
+                                              '',
                                       totalChapters: chaptersList.length,
                                     );
                                   }
@@ -805,10 +823,11 @@ class ShowEpubState extends State<ShowEpub> {
                               child: Text(
                                 chaptersList.isNotEmpty
                                     ? chaptersList[bookProgress
-                                                .getBookProgress(bookId)
-                                                .currentChapterIndex ??
-                                            0]
-                                        .chapter
+                                                    .getBookProgress(bookId)
+                                                    .currentChapterIndex ??
+                                                0]
+                                            .Title ??
+                                        ''
                                     : 'Loading...',
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -884,10 +903,11 @@ class ShowEpubState extends State<ShowEpub> {
                           child: Text(
                             chaptersList.isNotEmpty
                                 ? chaptersList[bookProgress
-                                            .getBookProgress(bookId)
-                                            .currentChapterIndex ??
-                                        0]
-                                    .chapter
+                                                .getBookProgress(bookId)
+                                                .currentChapterIndex ??
+                                            0]
+                                        .Title ??
+                                    ''
                                 : bookTitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

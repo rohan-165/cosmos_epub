@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:cosmos_epub/PageFlip/page_flip_widget.dart';
+import 'package:epubx/epubx.dart' hide Image;
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class PagingTextHandler {
   final Function paginate;
@@ -13,6 +17,7 @@ class PagingTextHandler {
 }
 
 class PagingWidget extends StatefulWidget {
+  final EpubBook epubBook;
   final String textContent;
   final String? innerHtmlContent;
   final String chapterTitle;
@@ -26,6 +31,7 @@ class PagingWidget extends StatefulWidget {
   final Widget? lastWidget;
 
   const PagingWidget(
+    this.epubBook,
     this.textContent,
     this.innerHtmlContent, {
     super.key,
@@ -187,6 +193,17 @@ class _PagingWidgetState extends State<PagingWidget> {
                               fontFamily: widget.style.fontFamily,
                               color: widget.style.color),
                         },
+                        customRender: {
+                          'img': (RenderContext ctx, Widget child) {
+                            final url = ctx.tree.attributes['src']!
+                                .replaceAll('../', '');
+                            final content = Uint8List.fromList(widget
+                                .epubBook.Content!.Images![url]!.Content!);
+                            return Image(
+                              image: MemoryImage(content),
+                            );
+                          },
+                        },
                       )
                     : Text(
                         text,
@@ -312,47 +329,4 @@ class _PagingWidgetState extends State<PagingWidget> {
           }
         });
   }
-
-  FontSize _parseFontSize(String? fontSize) {
-    if (fontSize == null) return FontSize.medium;
-    if (fontSize.endsWith('px')) {
-      return FontSize(double.parse(fontSize.replaceAll('px', '')));
-    }
-    return FontSize.medium; // default value
-  }
-
-  Color? _parseColor(String? color) {
-    if (color == null) return null;
-    return HexColor.fromHex(color);
-  }
-
-  TextAlign? _parseTextAlign(String? textAlign) {
-    switch (textAlign) {
-      case 'left':
-        return TextAlign.left;
-      case 'right':
-        return TextAlign.right;
-      case 'center':
-        return TextAlign.center;
-      case 'justify':
-        return TextAlign.justify;
-      default:
-        return null;
-    }
-  }
-}
-
-extension HexColor on Color {
-  static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
-  }
-
-  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
-      '${alpha.toRadixString(16).padLeft(2, '0')}'
-      '${red.toRadixString(16).padLeft(2, '0')}'
-      '${green.toRadixString(16).padLeft(2, '0')}'
-      '${blue.toRadixString(16).padLeft(2, '0')}';
 }
