@@ -213,7 +213,10 @@ class ShowEpubState extends State<ShowEpub> {
     }
   }
 
-  List<LocalChapterModel> loadSubChapter(List<EpubChapter> subChapters) {
+  List<LocalChapterModel> loadSubChapter(
+    List<EpubChapter> subChapters, {
+    bool isSubChapter = false,
+  }) {
     List<LocalChapterModel> subchaptersList = [];
     for (var chapter in subChapters) {
       subchaptersList.add(LocalChapterModel(
@@ -221,7 +224,14 @@ class ShowEpubState extends State<ShowEpub> {
         ContentFileName: chapter.ContentFileName,
         Anchor: chapter.Anchor,
         HtmlContent: chapter.HtmlContent,
+        isSubChapters: isSubChapter,
       ));
+      if ((chapter.SubChapters ?? []).isNotEmpty) {
+        subchaptersList.addAll(loadSubChapter(
+          chapter.SubChapters!,
+          isSubChapter: true,
+        ));
+      }
     }
 
     return subchaptersList;
@@ -232,23 +242,26 @@ class ShowEpubState extends State<ShowEpub> {
     await bookProgress.setCurrentChapterIndex(bookId, chapterIndex);
 
     String content = '';
+    content =
+        chaptersList.isNotEmpty ? chaptersList[chapterIndex].HtmlContent! : '';
 
-    await Future.wait(epubBook.Chapters!.map((EpubChapter chapter) async {
-      content = epubBook.Chapters![chapterIndex].HtmlContent!;
+    // await Future.wait(
+    //   epubBook.Chapters!.map((EpubChapter chapter) async {
+    //   content = epubBook.Chapters![chapterIndex].HtmlContent!;
 
-      List<EpubChapter>? subChapters = chapter.SubChapters;
-      if (subChapters != null && subChapters.isNotEmpty) {
-        for (int i = 0; i < subChapters.length; i++) {
-          content = content + subChapters[i].HtmlContent!;
-        }
-      } else {
-        subChapters?.forEach((element) {
-          if (element.Title == epubBook.Chapters![chapterIndex].Title) {
-            content = element.HtmlContent!;
-          }
-        });
-      }
-    }));
+    //   List<EpubChapter>? subChapters = chapter.SubChapters;
+    //   if (subChapters != null && subChapters.isNotEmpty) {
+    //     for (int i = 0; i < subChapters.length; i++) {
+    //       content = content + subChapters[i].HtmlContent!;
+    //     }
+    //   } else {
+    //     subChapters?.forEach((element) {
+    //       if (element.Title == epubBook.Chapters![chapterIndex].Title) {
+    //         content = element.HtmlContent!;
+    //       }
+    //     });
+    //   }
+    // }));
 
     htmlContent = content;
     textContent = parse(htmlContent).documentElement!.innerHtml;
