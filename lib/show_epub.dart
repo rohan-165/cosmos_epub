@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cosmos_epub/Helpers/context_extensions.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/cupertino.dart';
@@ -264,7 +262,8 @@ class ShowEpubState extends State<ShowEpub> {
     // }));
 
     htmlContent = content;
-    textContent = parse(htmlContent).documentElement!.innerHtml;
+    textContent = htmlContent;
+    // parse(htmlContent).documentElement!.innerHtml;
 
     if (isHTML(textContent)) {
       innerHtmlContent = textContent;

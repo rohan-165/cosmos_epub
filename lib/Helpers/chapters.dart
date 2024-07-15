@@ -46,7 +46,7 @@ class ChaptersList extends StatelessWidget {
       ),
       body: SafeArea(
         child: Container(
-          color: backColor,
+          color: whiteColor,
           padding: EdgeInsets.all(10.h),
           child: _buildView(
             list: chapters,

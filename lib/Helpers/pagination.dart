@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cosmos_epub/PageFlip/page_flip_widget.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:html/parser.dart' show parse;
+import 'package:html/dom.dart' as dom;
 // import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 class PagingTextHandler {
@@ -171,6 +174,8 @@ class _PagingWidgetState extends State<PagingWidget> {
     // Assuming each operation within the loop is asynchronous and returns a Future
     List<Future<Widget>> futures = _pageTexts.map((text) async {
       final _scrollController = ScrollController();
+      // Extract CSS and HTML body content
+      String cssContent = _extractCssFromEpub(widget.epubBook);
       return InkWell(
         onTap: widget.onTextTap,
         child: Container(
@@ -185,13 +190,19 @@ class _PagingWidgetState extends State<PagingWidget> {
                     bottom: 40.h, top: 60.h, left: 10.w, right: 10.w),
                 child: widget.innerHtmlContent != null
                     ? Html(
-                        data: text,
+                        data: '''
+                                       <style>
+                                         $cssContent 
+                                            </style>
+                                            $text
+                                      ''',
                         style: {
                           "*": Style(
-                              textAlign: TextAlign.justify,
-                              fontSize: FontSize(widget.style.fontSize ?? 0),
-                              fontFamily: widget.style.fontFamily,
-                              color: widget.style.color),
+                            textAlign: TextAlign.justify,
+                            fontSize: FontSize(widget.style.fontSize ?? 0),
+                            fontFamily: widget.style.fontFamily,
+                            color: widget.style.color,
+                          ),
                         },
                         customRender: {
                           'img': (RenderContext ctx, Widget child) {
@@ -219,6 +230,23 @@ class _PagingWidgetState extends State<PagingWidget> {
     }).toList();
 
     pages = await Future.wait(futures);
+  }
+
+  String _extractCssFromEpub(EpubBook epubBook) {
+    // All CSS files in the book (file name is the key)
+    Map<String, EpubTextContentFile>? cssFiles = epubBook.Content?.Css;
+
+    String cssContent = '';
+
+    cssFiles?.values.forEach((EpubTextContentFile cssFile) {
+      String? css = cssFile.Content;
+      if (css != null) {
+        cssContent = (cssContent) + css;
+      }
+    });
+    print("CSS Content :: ${cssContent.length}");
+
+    return cssContent;
   }
 
   @override
@@ -273,7 +301,7 @@ class _PagingWidgetState extends State<PagingWidget> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                icon: Icon(Icons.first_page),
+                                icon: const Icon(Icons.first_page),
                                 onPressed: () {
                                   setState(() {
                                     _currentPageIndex = 0;
@@ -283,7 +311,7 @@ class _PagingWidgetState extends State<PagingWidget> {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(Icons.navigate_before),
+                                icon: const Icon(Icons.navigate_before),
                                 onPressed: () {
                                   setState(() {
                                     if (_currentPageIndex > 0)
@@ -297,7 +325,7 @@ class _PagingWidgetState extends State<PagingWidget> {
                                 '${_currentPageIndex + 1}/${_pageTexts.length}',
                               ),
                               IconButton(
-                                icon: Icon(Icons.navigate_next),
+                                icon: const Icon(Icons.navigate_next),
                                 onPressed: () {
                                   setState(() {
                                     if (_currentPageIndex <
@@ -309,7 +337,7 @@ class _PagingWidgetState extends State<PagingWidget> {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(Icons.last_page),
+                                icon: const Icon(Icons.last_page),
                                 onPressed: () {
                                   setState(() {
                                     _currentPageIndex = _pageTexts.length - 1;
